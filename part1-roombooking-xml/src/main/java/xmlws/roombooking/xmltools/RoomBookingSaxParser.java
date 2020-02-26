@@ -44,9 +44,7 @@ public class RoomBookingSaxParser implements RoomBookingParser {
                                      Attributes atts)
                     throws SAXException {
 
-                nbFois = 0;
                 localNameTmp = localName;
-                System.out.println("In element : " + localNameTmp);
             }
 
             public void characters(char ch[], int start, int length)
@@ -54,32 +52,32 @@ public class RoomBookingSaxParser implements RoomBookingParser {
 
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
-                nbFois++;
+                String data = new String(ch, start, length);
 
-                if (localNameTmp.equals("label") && nbFois == 1) {
-                    roomBooking.setRoomLabel(new String(ch, start, length));
-                }
+                if (data.charAt(0) != '\n') {
 
-                if (localNameTmp.equals("username") && nbFois == 1) {
-                    roomBooking.setUsername(new String(ch, start, length));
-                }
-
-                if (localNameTmp.equals("startDate") && nbFois == 1) {
-                    String startDate = new String(ch, start, length);
-                    // TODO traitement date
-                    try {
-                        roomBooking.setStartDate(sdf.parse(startDate));
-                    } catch (ParseException e) {
-                        e.printStackTrace();
+                    if (localNameTmp.equals("label")) {
+                        roomBooking.setRoomLabel(data);
                     }
-                }
 
-                if (localNameTmp.equals("endDate") && nbFois == 1) {
-                    String endDate = new String(ch, start, length);
-                    try {
-                        roomBooking.setEndDate(sdf.parse(endDate));
-                    } catch (ParseException e) {
-                        e.printStackTrace();
+                    if (localNameTmp.equals("username")) {
+                        roomBooking.setUsername(data);
+                    }
+
+                    if (localNameTmp.equals("startDate")) {
+                        try {
+                            roomBooking.setStartDate(sdf.parse(data));
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    if (localNameTmp.equals("endDate")) {
+                        try {
+                            roomBooking.setEndDate(sdf.parse(data));
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
